@@ -1,10 +1,11 @@
 import React from 'react';
 
-const SudokuValueBox = () => {
+const SudokuValueBox = (props) => {
 
+    const styleName = props.value === 0? "sudoku_value_box unsolved" : "sudoku_value_box";
     return (
-        <div className="sudoku_valeu_box">
-
+        <div className={styleName}>
+            {props.value}
         </div>
     )
 }
