@@ -10,13 +10,19 @@
 }
 
 .new_btn{
-    top: 30%;
-    transform: translateY(-30%);
+    top: 20%;
+    transform: translateY(-20%);
 }
 
 .solution_btn {
-    top: 50%;
-    transform: translateY(-50%);
+    top: 40%;
+    transform: translateY(-40%);
+}
+
+.submit_btn {
+    
+    top: 60%;
+    transform: translateY(-60%);
 }
 
 .board_btn {
@@ -25,13 +31,11 @@
     background-color: white;
     width: 25vh;
     height: 10vh;
-    /* max-height: 8vh;  */
     font-weight: bold;
     color: black;   
-
     left: -55%;
     transform: translateX(55%);
-
+    padding: 0;
 }
 
 .board_btn:hover {
@@ -39,29 +43,35 @@
     color: white;
 }
 
-@media only screen and (max-width: 1000px) {
+@media only screen and (max-width: 1400px) {
     .sudoku_board {
         grid-template-columns: repeat(9, 7vh);
         grid-template-rows: repeat(9, 7vh);
+        left: 50%;
+        top: 30%;
+        transform: translate(-50%, -30%);
     }
 
-    .new_btn{
-        left: 57%;
-        transform: translateX(-57%);  
+    .new_btn {
+        left: -15%;
+        transform: translateX(15%);  
     }
     
     .solution_btn {
-        left: 5%;
-        transform: translateX(-5%);  
+        left: 30%;
+        transform: translateX(-30%);  
     }
-    
+
+    .submit_btn {
+        left: 75%;
+        transform: translateX(-75%);  
+    }
+
     .board_btn {
         width: 25vh;
-        height: 10vh;
-        border: 2px solid black;
-        
-        top: -25%;
-        transform: translateY(25%);
-
+        height: 7vh;
+        border: 2px solid black;    
+        top: 120%;
+        transform: translateY(-120%);
     }
   }
