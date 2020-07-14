@@ -15,8 +15,9 @@ const SudokuBoard = () => {
         })
             .then(response => response.json())
             .then(data => {
-                setOriginalBoard(data.board);
-                PopulateBoard(data.board);
+                const formattedBoard = FormatBoard(data.board)
+                setOriginalBoard(formattedBoard);
+                PopulateBoard(formattedBoard);
             })
             .catch((err) => {
                 // Error :(
@@ -26,7 +27,10 @@ const SudokuBoard = () => {
     const GetSolution = () => {
         fetch('/api/sudoku/solution', {
             method: 'post',
-            body: JSON.stringify(originalBoard)
+            body: JSON.stringify({currentBoard: originalBoard}),
+            headers: {
+                'Content-Type': 'application/json'
+              },
         })
             .then(response => response.json())
             .then(data => {
@@ -39,6 +43,16 @@ const SudokuBoard = () => {
             .catch((err) => {
                 // Error :(
             });
+    }
+
+    const FormatBoard = (board) => {
+        for (let i = 0; i < board.length; i++) {
+            for (let y = 0; y < board.length; y++) {
+                const wasGiven = board[i][y]!==0;
+                board[i][y] = {value: board[i][y],wasGiven: wasGiven}
+            }
+        }
+        return board;
     }
 
     const PopulateBoard = (board) => {
@@ -55,7 +69,7 @@ const SudokuBoard = () => {
     return (
         <div className="sudoku_board">
             {cells.map((element, index) => {
-                return <SudokuValueBox key={index} value={element} />
+                return <SudokuValueBox key={index} {...element} />
             })}
             <button className="new_btn board_btn" onClick={GetBoard}>NEW</button>
             <button className="solution_btn board_btn" onClick={GetSolution}>SOLUTION</button>
