@@ -7,6 +7,7 @@ import './styles/SudokuValueBox.css';
 function App() {
   return (
     <div className="App">
+      <h1 className="title">SUDOKU SOLVER <span>ALPHA</span></h1>
       <SudokuBoard />
     </div>
   );
