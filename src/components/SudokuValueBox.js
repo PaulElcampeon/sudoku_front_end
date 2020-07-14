@@ -1,12 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const SudokuValueBox = (props) => {
     const [value, setValue] = useState(0);
+    
+    useEffect(() => {
+        setValue(props.value)
+    });
 
-    const styleName = props.wasGiven? "sudoku_value_box" : "sudoku_value_box unsolved";
+    const styleName = props.wasGiven ? "sudoku_value_box" : "sudoku_value_box unsolved";
 
     const UpdateValue = (e) => {
-        if (props.value === 0) {
+        if (!props.wasGiven) {
             if (e.target.value === "") {
                 setValue(0)
             } else {
@@ -14,14 +18,14 @@ const SudokuValueBox = (props) => {
                 const tempArray = tempValue.split("");
                 const newValue = tempArray.pop();
                 setValue(newValue)
-                props.onChange({index: props.index, value: newValue})
+                props.onChange({ index: props.index, value: newValue })
             }
         }
     }
 
     return (
         <div className={styleName}>
-            <input className="value_box_input" type="text" value={props.value === 0 ? value : props.value} onChange={UpdateValue} />
+            <input className="value_box_input" type="text" value={value} onChange={UpdateValue} />
         </div>
     )
 }
