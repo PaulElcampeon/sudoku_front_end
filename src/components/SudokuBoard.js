@@ -100,6 +100,7 @@ const SudokuBoard = () => {
         const y = index > 8 ? index % 9 : index
         updatingBoard[x][y].value = Number(value);
         setUpdatingBoard(updatingBoard);
+        PopulateBoard(updatingBoard);
     }
 
     return (
