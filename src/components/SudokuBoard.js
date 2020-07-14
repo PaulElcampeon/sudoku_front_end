@@ -5,6 +5,7 @@ const SudokuBoard = () => {
     const [cells, setCells] = useState(new Array(81).fill(0));
     const [originalBoard, setOriginalBoard] = useState([]);
     const [updatingBoard, setUpdatingBoard] = useState([]);
+    const [message, setMessage] = useState(null);
 
     useEffect(() => {
         GetBoard();
@@ -22,17 +23,17 @@ const SudokuBoard = () => {
                 PopulateBoard(formattedBoard);
             })
             .catch((err) => {
-                // Error :(
+                setMessage("Error");
             });
     }
 
     const GetSolution = () => {
         fetch('/api/sudoku/get-solution', {
             method: 'post',
-            body: JSON.stringify({currentBoard: originalBoard}),
+            body: JSON.stringify({ currentBoard: originalBoard }),
             headers: {
                 'Content-Type': 'application/json'
-              },
+            },
         })
             .then(response => response.json())
             .then(data => {
@@ -40,42 +41,44 @@ const SudokuBoard = () => {
                     PopulateBoard(data.solution);
                     setUpdatingBoard(data.solution);
                 } else {
-
+                    setMessage("No Solution");
                 }
             })
             .catch((err) => {
-                // Error :(
+                setMessage("Error");
             });
     }
 
     const SubmitAnswer = () => {
         fetch('/api/sudoku/check-answer', {
             method: 'post',
-            body: JSON.stringify({originalBoard: originalBoard, edittedBoard: updatingBoard}),
+            body: JSON.stringify({ originalBoard: originalBoard, edittedBoard: updatingBoard }),
             headers: {
                 'Content-Type': 'application/json'
-              },
+            },
         })
             .then(response => response.json())
             .then(data => {
                 if (data.isSuccessful) {
-                    // console.log("Answer was correct");
-                    // PopulateBoard(data.solution);
+                    setMessage("Correct");
                 } else {
-                    // console.log("Answer was in correct");
-
+                    setMessage("Incorrect");
                 }
             })
             .catch((err) => {
-                // Error :(
+                setMessage("Error");
             });
+    }
+
+    const CloseMessage = () => {
+        setMessage(null)
     }
 
     const FormatBoard = (board) => {
         for (let i = 0; i < board.length; i++) {
             for (let y = 0; y < board.length; y++) {
-                const wasGiven = board[i][y]!==0;
-                board[i][y] = {value: board[i][y],wasGiven: wasGiven}
+                const wasGiven = board[i][y] !== 0;
+                board[i][y] = { value: board[i][y], wasGiven: wasGiven }
             }
         }
         return board;
@@ -92,9 +95,9 @@ const SudokuBoard = () => {
         setCells(tempValuesHolder);
     }
 
-    const UpdateOriginalBoard = ({index, value}) => {
+    const UpdateOriginalBoard = ({ index, value }) => {
         const x = Math.floor(index / 9)
-        const y = index > 8? index % 9 : index 
+        const y = index > 8 ? index % 9 : index
         updatingBoard[x][y].value = Number(value);
         setUpdatingBoard(updatingBoard);
     }
@@ -107,6 +110,11 @@ const SudokuBoard = () => {
             <button className="new_btn board_btn" onClick={GetBoard}>GENERATE</button>
             <button className="solution_btn board_btn" onClick={GetSolution}>SOLUTION</button>
             <button className="submit_btn board_btn" onClick={SubmitAnswer}>SUBMIT</button>
+            {message && <div className="message_display">
+                <h1 className="message">{message}</h1>
+                <button className="close_btn" onClick={CloseMessage}>CLOSE</button>
+            </div>
+            }
         </div>
     )
 }
