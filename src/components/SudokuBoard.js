@@ -4,6 +4,7 @@ import SudokuValueBox from './SudokuValueBox';
 const SudokuBoard = () => {
     const [cells, setCells] = useState(new Array(81).fill(0));
     const [originalBoard, setOriginalBoard] = useState([]);
+    const [updatingBoard, setUpdatingBoard] = useState([]);
 
     useEffect(() => {
         GetBoard();
@@ -17,6 +18,7 @@ const SudokuBoard = () => {
             .then(data => {
                 const formattedBoard = FormatBoard(data.board)
                 setOriginalBoard(formattedBoard);
+                setUpdatingBoard(formattedBoard);
                 PopulateBoard(formattedBoard);
             })
             .catch((err) => {
@@ -25,7 +27,7 @@ const SudokuBoard = () => {
     }
 
     const GetSolution = () => {
-        fetch('/api/sudoku/solution', {
+        fetch('/api/sudoku/get-solution', {
             method: 'post',
             body: JSON.stringify({currentBoard: originalBoard}),
             headers: {
@@ -36,7 +38,31 @@ const SudokuBoard = () => {
             .then(data => {
                 if (data.isSuccessful) {
                     PopulateBoard(data.solution);
+                    setUpdatingBoard(data.solution);
                 } else {
+
+                }
+            })
+            .catch((err) => {
+                // Error :(
+            });
+    }
+
+    const SubmitAnswer = () => {
+        fetch('/api/sudoku/check-answer', {
+            method: 'post',
+            body: JSON.stringify({originalBoard: originalBoard, edittedBoard: updatingBoard}),
+            headers: {
+                'Content-Type': 'application/json'
+              },
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.isSuccessful) {
+                    // console.log("Answer was correct");
+                    // PopulateBoard(data.solution);
+                } else {
+                    // console.log("Answer was in correct");
 
                 }
             })
@@ -66,13 +92,21 @@ const SudokuBoard = () => {
         setCells(tempValuesHolder);
     }
 
+    const UpdateOriginalBoard = ({index, value}) => {
+        const x = Math.floor(index / 9)
+        const y = index > 8? index % 9 : index 
+        updatingBoard[x][y].value = Number(value);
+        setUpdatingBoard(updatingBoard);
+    }
+
     return (
         <div className="sudoku_board">
             {cells.map((element, index) => {
-                return <SudokuValueBox key={index} {...element} />
+                return <SudokuValueBox key={index} index={index} {...element} onChange={UpdateOriginalBoard} />
             })}
-            <button className="new_btn board_btn" onClick={GetBoard}>NEW</button>
+            <button className="new_btn board_btn" onClick={GetBoard}>GENERATE</button>
             <button className="solution_btn board_btn" onClick={GetSolution}>SOLUTION</button>
+            <button className="submit_btn board_btn" onClick={SubmitAnswer}>SUBMIT</button>
         </div>
     )
 }

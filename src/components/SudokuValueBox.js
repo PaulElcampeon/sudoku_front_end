@@ -12,7 +12,9 @@ const SudokuValueBox = (props) => {
             } else {
                 const tempValue = e.target.value;
                 const tempArray = tempValue.split("");
-                setValue(tempArray.pop())
+                const newValue = tempArray.pop();
+                setValue(newValue)
+                props.onChange({index: props.index, value: newValue})
             }
         }
     }
